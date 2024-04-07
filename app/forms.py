@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from app.models import User
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, DateField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, IntegerField, DateField, BooleanField, SelectField
 from wtforms.validators import Length, DataRequired, Email, EqualTo, ValidationError
 
 #>>> python
@@ -11,7 +11,7 @@ from wtforms.validators import Length, DataRequired, Email, EqualTo, ValidationE
 class RegisterationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=30)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    status = StringField('Status', validators=[DataRequired(), Length(min=2, max=30)])
+    status = SelectField('Status', choices=[('student', 'Student'), ('teacher', 'Teacher'), ('admin', 'Admin')], validators=[DataRequired()])
     password1 = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=30)])
     password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password1')])
     submit = SubmitField('Sign Up') 
@@ -31,7 +31,3 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
-class SearchForm(FlaskForm):
-    searchName = StringField('Search Name', validators=[DataRequired()])
-    submit = SubmitField('Search')

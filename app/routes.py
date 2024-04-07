@@ -2,7 +2,7 @@ import requests
 from flask import request, render_template, redirect, url_for, flash, get_flashed_messages
 from app import app, db, bcrypt, login_manager
 from app.models import User, Class
-from app.forms import RegisterationForm, LoginForm, SearchForm
+from app.forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
@@ -10,10 +10,6 @@ def index():
     return render_template('home.html')
 
 # pass the search form to the template/base.html
-# @app.context_processor
-# def inject_now():
-#     form = SearchForm()
-#     return dict(form=form)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -50,3 +46,10 @@ def signup():
         for err_msg in form.errors.values(): # loop through the dictionary of errors
             flash(f'Registeration Error: {err_msg}', category='danger') # print each error message to the screen
     return render_template('signup.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out', category='success')
+    return redirect(url_for('home'))

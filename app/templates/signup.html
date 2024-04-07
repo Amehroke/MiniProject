@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Sign Up!
+{% endblock %}
+
+{% block content %}
+
+    <section class="py-5 mt-5">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6 col-xl-4">
+                <h2 class="mb-4 text-center fw-semibold">Sign Up!</h2>
+                <form class="text-center form-register" method="POST">
+                    {{ form.csrf_token }}
+                    {{ form.hidden_tag() }}
+                    {{ form.username(class="form-control mb-3", placeholder="Username") }}
+                    {{ form.email(class="form-control mb-3", placeholder="Email") }}
+                    {{ form.status(class="form-control mb-3", placeholder="Status") }}
+                    {{ form.password1(class="form-control mb-3", placeholder="Password") }}
+                    {{ form.password2(class="form-control mb-3", placeholder="Confirm Password") }}
+                    {{ form.submit(class="btn btn-secondary d-block w-100", value="Create Account") }}
+                    <p class="text-muted" style="margin-top: 10px;">Already have an account? <a class="btn btn-sm btn-primary" href="{{ url_for('login' )}}">Login!</a></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

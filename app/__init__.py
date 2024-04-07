@@ -17,14 +17,15 @@ print(os.getenv('DATABASE_URL')) # this line will print the database url from th
 
 app = Flask(__name__) # this line will create the flask object
 app.app_context().push() # this line will create the application context, which is needed for the db object because it is not created with the app object in this file
+app.config['SECRET_KEY'] = 'b1b4b3b1b4b3b1b4b3b1b4b3b1b4b3' # this line will set the secret key for the app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db' # this line will set the database uri to the students.db file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # this line will set the track modifications to False
-db = SQLAlchemy(app) # this line will create the database object
-migrate = Migrate(app, db) # this line will create the migration object
-bcrypt = Bcrypt(app) # this line will create the bcrypt object
-CORS(app)  # Allow CORS for all routes
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+bcrypt = Bcrypt(app)
+CORS(app)
 
-login_manager = LoginManager(app) # this line will create the login manager object
+login_manager = LoginManager(app)
 login_manager.login_view = 'login' # this line will set the login view to the login function
 login_manager.login_message_category = 'info' # this line will set the login message category to info
 login_manager.remember_cookie_duration = timedelta(seconds=3600) # this line will set the remember me cookie to expire after 1 hour
