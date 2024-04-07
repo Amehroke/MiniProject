@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask import Flask
@@ -6,14 +6,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_admin import Admin, AdminIndexView
+from flask_login import current_user
 from datetime import timedelta
-import os
-from dotenv import load_dotenv
-
-
-load_dotenv()
-
-print(os.getenv('DATABASE_URL')) # this line will print the database url from the .env file, for testing
 
 app = Flask(__name__) # this line will create the flask object
 app.app_context().push() # this line will create the application context, which is needed for the db object because it is not created with the app object in this file
@@ -24,6 +19,23 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 CORS(app)
+
+class MyAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_authenticated and current_user.status == 'admin'
+
+    def inaccessible_callback(self, name, **kwargs):
+        if not current_user.is_authenticated:
+            flash('Please log in to access this page.', 'info')
+            return redirect(url_for('login', next=request.url))
+        elif current_user.status != 'admin':
+            flash('You do not have permission to access this page.', 'info')
+            return redirect(url_for('home'))
+        else:
+            flash('Please log in to access this page.', 'info')
+            return redirect(url_for('home'))
+
+admin = Admin(app, name='Admin', template_mode='bootstrap3', index_view=MyAdminIndexView())
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' # this line will set the login view to the login function

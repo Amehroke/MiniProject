@@ -1,5 +1,6 @@
-from app import db, bcrypt, login_manager
+from app import db, bcrypt, login_manager, admin
 from flask_login import UserMixin
+from flask_admin.contrib.sqla import ModelView
 
 @login_manager.user_loader # this is a decorator, it will allow us to access the function as an attribute
 def load_user(user_id): # this function will load the user
@@ -31,6 +32,9 @@ class Class(db.Model): # this line will create the Class model
 
     def __repr__(self): # this function will return the name of the class
         return f"Class('{self.name}')"
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Class, db.session))
     
 # how to delete all data from a table
 # >>> python
