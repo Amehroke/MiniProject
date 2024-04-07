@@ -17,15 +17,17 @@
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
         <a class="navbar-brand" href="/">Home</a>
-        {% if current_user.is_authenticated %} <!-- can access current_user because of flask_login -->
-        <a><span style="width: 192.75px;color: rgb(35,66,75);font-size: 18px; text-align: center;">
-                    Welcome, {{ current_user.username }}!
-                </span></a>
-            <a class="btn btn-primary shadow" style="margin-left: 10px;" role="button" href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-            <a class="btn btn-primary shadow" style="margin-right: 20px;" role="button" href="{{ url_for('login') }}">Login</a>
-            <a class="btn btn-secondary shadow" role="button" href="{{ url_for('signup') }}">Sign up</a>
-        {% endif %}
+            <div>
+            {% if current_user.is_authenticated %} <!-- can access current_user because of flask_login -->
+                <a><span style="width: 192.75px;color: rgb(35,66,75);font-size: 18px; text-align: center;">
+                        Welcome, {{ current_user.username }}!
+                    </span></a>
+                <a class="btn btn-primary shadow" style="margin-left: 10px;" role="button" href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a class="btn btn-primary shadow" style="margin-right: 20px;" role="button" href="{{ url_for('login') }}">Login</a>
+                <a class="btn btn-secondary shadow" role="button" href="{{ url_for('signup') }}">Sign up</a>
+            {% endif %}
+            </div>
         </div>
     </nav>
 

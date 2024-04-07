@@ -2,71 +2,51 @@ import requests
 from flask import request, render_template, redirect, url_for, flash, get_flashed_messages
 from app import app, db, bcrypt, login_manager
 from app.models import User, Class
-# from app.forms import RegisterationForm, LoginForm, SearchForm
+from app.forms import RegisterationForm, LoginForm, SearchForm
 from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
 def index():
     return render_template('home.html')
 
-# @app.route('/classes', methods=['GET'])
-# def get_classes():
-#     classes = Classes.query.all()
-#     return jsonify({class.name: class
+# pass the search form to the template/base.html
+# @app.context_processor
+# def inject_now():
+#     form = SearchForm()
+#     return dict(form=form)
 
-# @app.route('/grades', methods=['GET'])
-# def get_grades():
-#     students = Student.query.all()
-#     print(students)
-#     return jsonify({student.name: student.grade for student in students})
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        attempted_user = User.query.filter_by(username=form.username.data).first()
+        if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data): # this line will check if we have a user with the username that the user entered and if the password that the user entered is correct
+            if form.remember.data:
+                login_user(attempted_user, remember=True)
+                flash(f'Success! You are logged in as: {attempted_user.username}, and will be remembered for 1 hour', category='success')
+                return redirect(url_for('home'))
+            
+            login_user(attempted_user)
+            flash(f'Success! You are logged in as: {attempted_user.username}', category='success')
+            return redirect(url_for('home'))
+        else:
+            flash('Incorrect Username or Password. Please try again.', category='danger')
 
+    return render_template('login.html', form=form)
 
-# @login_required
-# @app.route('/grade/<string:name>', methods=['GET'])
-# def get_grade(name):
-#     if name in students:
-#         return jsonify({name: students[name]})
-#     else:
-#         return jsonify({"error": "Student not found"}), 404
-
-# @app.route('/grade', methods=['POST'])
-# def add_or_update_grade():
-#     data = request.json
-#     if 'name' in data and 'grade' in data:
-#         student = Student.query.filter_by(name=data['name']).first()
-#         if student is None:
-#             student = Student(name=data['name'], grade=data['grade'])
-#             db.session.add(student)
-#         else:
-#             student.grade = data['grade']
-#         db.session.commit()
-#         return jsonify({"message": "Grade added successfully"})
-#     else:
-#         return jsonify({"error": "Invalid data"}), 400
-
-
-# @app.route('/grade/<string:name>', methods=['PUT'])
-# def update_grade(name):
-#     data = request.json
-#     # Find the student by name
-#     student = Student.query.filter_by(name=name).first()
-
-#     # If the student exists, update their grade
-#     if student:
-#         student.grade = data['grade']
-#         db.session.commit()  # Commit changes to the database
-#         return jsonify({"message": "Grade updated successfully"})
-#     else:
-#         # If the student was not found, return an error
-#         return jsonify({"error": "Student not found"}), 404
-
-
-# @app.route('/grade/<string:name>', methods=['DELETE'])
-# def delete_grade(name):
-#     student = Student.query.filter_by(name=name).first()
-#     if student:
-#         db.session.delete(student)
-#         db.session.commit()
-#         return jsonify({"message": "Grade deleted successfully"})
-#     else:
-#         return jsonify({"error": "Student not found"}), 404
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
+    form = RegisterationForm()
+    if form.validate_on_submit(): # if the form is valid/user has submitted the form
+        new_user = User(username=form.username.data,
+                        email=form.email.data,
+                        password=form.password1.data)
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user)
+        flash('You have successfully created an account!', category='success')
+        return redirect(url_for('home'))
+    if form.errors != {}: # if there are no errors from the validations
+        for err_msg in form.errors.values(): # loop through the dictionary of errors
+            flash(f'Registeration Error: {err_msg}', category='danger') # print each error message to the screen
+    return render_template('signup.html', form=form)
