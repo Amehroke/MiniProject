@@ -24,11 +24,12 @@ migrate = Migrate(app, db) # this line will create the migration object
 bcrypt = Bcrypt(app) # this line will create the bcrypt object
 CORS(app)  # Allow CORS for all routes
 
-# login_manager = LoginManager(app) # this line will create the login manager object
-# login_manager.login_view = 'login' # this line will set the login view to the login function
-# login_manager.login_message_category = 'info' # this line will set the login message category to info
-# login_manager.remember_cookie_duration = timedelta(seconds=3600) # this line will set the remember me cookie to expire after 1 hour
-# login_manager.login_message = (u'Please log in to access this page.') # this line will set the login message to the message in the brackets
+login_manager = LoginManager(app) # this line will create the login manager object
+login_manager.login_view = 'login' # this line will set the login view to the login function
+login_manager.login_message_category = 'info' # this line will set the login message category to info
+login_manager.remember_cookie_duration = timedelta(seconds=3600) # this line will set the remember me cookie to expire after 1 hour
+login_manager.login_message = (u'Please log in to access this page.') # this line will set the login message to the message in the brackets
+login_manager.init_app(app)
 
 # we import routes after the app object is created because the routes module needs to import the app object
 from app import routes

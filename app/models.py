@@ -10,6 +10,7 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(60), nullable=False)
+    status = db.Column(db.String(30), nullable=False, default='student')
 
     @property # this is a decorator, it will allow us to access the function as an attribute
     def password(self): # this function will return the password
@@ -22,14 +23,9 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
     def check_password_correction(self, attempted_password): # this function will check if the password is correct
         return bcrypt.check_password_hash(self.password_hash, attempted_password) # this line will check if the password is correct, it will return True if it is correct and False if it is not correct
 
-class Great(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    origin = db.Column(db.String(80), unique=False, nullable=True)
-    birth = db.Column(db.String(80), unique=False, nullable=True)
-    death = db.Column(db.String(80), unique=False, nullable=True)
-    age = db.Column(db.Integer, unique=False, nullable=True)
-    url = db.Column(db.String(200), unique=False, nullable=True)
+class Class(db.Model): # this line will create the Class model
+    id = db.Column(db.Integer, primary_key=True) # this line will create the id column
+    name = db.Column(db.String(100), nullable=False) # this line will create the name column
 
-    def __repr__(self):
-        return '<Great %r>' % self.name
+    def __repr__(self): # this function will return the name of the class
+        return f"Class('{self.name}')"
