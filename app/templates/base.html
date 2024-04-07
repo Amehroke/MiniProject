@@ -22,6 +22,7 @@
                         Welcome, {{ current_user.first_name }}!
                     </span></a>
                 <a class="btn btn-primary shadow" style="margin-left: 10px;" role="button" href="{{ url_for('logout') }}">Logout</a>
+                <a class="btn btn-info shadow" style="margin-left: 10px;" role="button" href="/admin">Admin Page</a>
             {% else %}
                 <a class="btn btn-primary shadow" style="margin-right: 20px;" role="button" href="{{ url_for('login') }}">Login</a>
                 <a class="btn btn-secondary shadow" role="button" href="{{ url_for('signup') }}">Sign up</a>
