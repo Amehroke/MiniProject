@@ -27,11 +27,6 @@ class Teacher(db.Model):
     classes = db.relationship('Class', backref='teacher', lazy=True)
 
 
-
-
-
-
-
 # Sample data for demonstration
 students = {
     "Alice": 85,
@@ -72,7 +67,6 @@ def index():
 @app.route('/grades', methods=['GET'])
 def get_grades():
     students = Student.query.all()
-    print(students)
     return jsonify({student.name: student.grade for student in students})
 
 
