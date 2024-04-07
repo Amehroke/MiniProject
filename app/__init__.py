@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_admin import Admin
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
@@ -23,6 +24,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # this line will set the tr
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
+admin = Admin(app, name='Admin', template_mode='bootstrap3')
 CORS(app)
 
 login_manager = LoginManager(app)
