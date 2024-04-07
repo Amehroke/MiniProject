@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Lab07 - web app with sql database</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="brand-title"><a href="/">Lab07 - web app with SQL database</a></div>
+    </nav>
+    <main>
+      <div class="button-container">
+        <button class="Buttons-class" style="background-color: #c084fc"><a href="/populate">Populate Grades</a></button>
+        <button class="Buttons-class" style="background-color: #c084fc"><a href="/delete">Delete Grades</a></button>
+        <button class="Buttons-class" id="fetch-all-grades-button" style="background-color: #7dd3fc">GET All Grades</button>
+        <button class="Buttons-class" id="fetch-one-grade-button" style="background-color: #7dd3fc">GET One Grade</button>
+        <button class="Buttons-class" id="create-one-grade-button" style="background-color: #6ee7b7">POST One Grade</button>
+        <button class="Buttons-class" id="update-one-grade-button" style="background-color: #d8b4fe">PUT One Grade</button>
+        <button class="Buttons-class" id="delete-one-grade-button" style="background-color: #e11d48">DELETE One Grade</button>
+        <button class="Buttons-class" id="clear-button">Clear all</button>
+      </div>
+        <div id="data-container"></div>
+    </main>
+
+    <dialog id="fetch-one-grade-dialog">
+      <form id="fetch-one-grade-form">
+        <label for="student-name">Student Name:</label>
+        <input type="text" id="student-name" name="student-name" />
+        <button id="fetch-one-grade-dialog-submit" type="submit">Fetch</button>
+        <button id="fetch-one-grade-dialog-close">Close</button>
+      </form>
+    </dialog>
+    <dialog id="create-one-grade-dialog">
+      <form id="create-one-grade-form">
+        <label for="student-name-create">Student Name:</label>
+        <input type="text" id="student-name-create" name="student-name-create"/>
+        <label for="student-grade-create">Grade:</label>
+        <input type="text" id="student-grade-create" name="student-grade-create" />
+        <button id="create-one-grade-dialog-submit" type="submit">Create</button>
+        <button id="create-one-grade-dialog-close">Close</button>
+      </form>
+    </dialog>
+    <dialog id="update-one-grade-dialog">
+      <form id="update-one-grade-form">
+        <label for="student-name-update">Student Name:</label>
+        <input type="text" id="student-name-update" name="student-name-update"/>
+        <label for="student-grade-update">New Grade:</label>
+        <input type="text" id="student-grade-update" name="student-grade-update" />
+        <button id="update-one-grade-dialog-submit" type="submit">Update</button>
+        <button id="update-one-grade-dialog-close">Close</button>
+      </form>
+    </dialog>
+    <dialog id="delete-one-grade-dialog">
+      <form id="delete-one-grade-form">
+        <label for="student-name-delete">Student Name:</label>
+        <input type="text" id="student-name-delete" name="student-name-delete"/>
+        <button id="delete-one-grade-dialog-submit" type="submit">Delete</button>
+        <button id="delete-one-grade-dialog-close">Close</button>
+      </form>
+    </dialog>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

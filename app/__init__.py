@@ -1,108 +1,34 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+
+load_dotenv()
+
+print(os.getenv('DATABASE_URL')) # this line will print the database url from the .env file, for testing
+
+app = Flask(__name__) # this line will create the flask object
+app.app_context().push() # this line will create the application context, which is needed for the db object because it is not created with the app object in this file
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db' # this line will set the database uri to the students.db file
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # this line will set the track modifications to False
+db = SQLAlchemy(app) # this line will create the database object
+migrate = Migrate(app, db) # this line will create the migration object
+bcrypt = Bcrypt(app) # this line will create the bcrypt object
 CORS(app)  # Allow CORS for all routes
 
+login_manager = LoginManager(app) # this line will create the login manager object
+login_manager.login_view = 'login' # this line will set the login view to the login function
+login_manager.login_message_category = 'info' # this line will set the login message category to info
+login_manager.remember_cookie_duration = timedelta(seconds=3600) # this line will set the remember me cookie to expire after 1 hour
+login_manager.login_message = (u'Please log in to access this page.') # this line will set the login message to the message in the brackets
 
-# Database Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-
-# Define the Student Model
-class Student(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    grade = db.Column(db.Integer, nullable=False)
-
-    def to_dict(self):
-        return {"name": self.name, "grade": self.grade}
-
-
-
-# Sample data for demonstration
-students = {
-    "Alice": 85,
-    "Bob": 90,
-    "Charlie": 75
-}
-
-
-@app.route('/')
-def index():
-    return 'Hello, World!'
-
-@app.route('/login', methods=['GET'])
-def login():
-    return 'Login page'
-
-# @app.route('/classes', methods=['GET'])
-# def get_classes():
-#     classes = Classes.query.all()
-#     return jsonify({class.name: class
-
-@app.route('/grades', methods=['GET'])
-def get_grades():
-    students = Student.query.all()
-    print(students)
-    return jsonify({student.name: student.grade for student in students})
-
-
-
-@app.route('/grade/<string:name>', methods=['GET'])
-def get_grade(name):
-    if name in students:
-        return jsonify({name: students[name]})
-    else:
-        return jsonify({"error": "Student not found"}), 404
-
-@app.route('/grade', methods=['POST'])
-def add_or_update_grade():
-    data = request.json
-    if 'name' in data and 'grade' in data:
-        student = Student.query.filter_by(name=data['name']).first()
-        if student is None:
-            student = Student(name=data['name'], grade=data['grade'])
-            db.session.add(student)
-        else:
-            student.grade = data['grade']
-        db.session.commit()
-        return jsonify({"message": "Grade added successfully"})
-    else:
-        return jsonify({"error": "Invalid data"}), 400
-
-
-@app.route('/grade/<string:name>', methods=['PUT'])
-def update_grade(name):
-    data = request.json
-    # Find the student by name
-    student = Student.query.filter_by(name=name).first()
-
-    # If the student exists, update their grade
-    if student:
-        student.grade = data['grade']
-        db.session.commit()  # Commit changes to the database
-        return jsonify({"message": "Grade updated successfully"})
-    else:
-        # If the student was not found, return an error
-        return jsonify({"error": "Student not found"}), 404
-
-
-@app.route('/grade/<string:name>', methods=['DELETE'])
-def delete_grade(name):
-    student = Student.query.filter_by(name=name).first()
-    if student:
-        db.session.delete(student)
-        db.session.commit()
-        return jsonify({"message": "Grade deleted successfully"})
-    else:
-        return jsonify({"error": "Student not found"}), 404
-
-if __name__ == '__main__':
-    with app.app_context():
-        # Create the database and tables
-        db.create_all()
-    app.run(debug=True)
+# we import routes after the app object is created because the routes module needs to import the app object
+from app import routes

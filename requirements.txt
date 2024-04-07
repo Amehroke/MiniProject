@@ -10,8 +10,8 @@ sqlalchemy==2.0.13 # this library is used to work with the database
 werkzeug==2.3.4 # provides a solid base for building web applications by offering essential functionalities like routing, request and response handling, URL generation, and more. flask is built on top of this library
 email_validator==2.0.0.post2 # this library is used to validate email addresses
 bcrypt==4.0.1 # this library is used to hash passwords
-flask_bcrypt==1.0.1 # this library is used to hash passwords in flask
-flask_login==0.6.2 # this library is used to manage the user login
+Flask-Bcrypt==1.0.1 # this library is used to hash passwords
+Flask-Login==0.6.3 # this library is used to manage the user login
 python-dotenv==1.0.0 # this library is used to load environment variables from a .env file
 requests==2.31.0 # this library is used to make HTTP requests
 Flask-Admin==1.6.1 # this library is used to create an admin interface
