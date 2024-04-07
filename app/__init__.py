@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask import Flask
@@ -26,10 +26,14 @@ class MyAdminIndexView(AdminIndexView):
 
     def inaccessible_callback(self, name, **kwargs):
         if not current_user.is_authenticated:
+            flash('Please log in to access this page.', 'info')
             return redirect(url_for('login', next=request.url))
         elif current_user.status != 'admin':
+            flash('You do not have permission to access this page.', 'info')
             return redirect(url_for('home'))
-        return redirect(url_for('home'))
+        else:
+            flash('Please log in to access this page.', 'info')
+            return redirect(url_for('home'))
 
 admin = Admin(app, name='Admin', template_mode='bootstrap3', index_view=MyAdminIndexView())
 

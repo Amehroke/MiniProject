@@ -30,6 +30,19 @@
         </div>
     </nav>
 
+    <div class="col-sm-4" style="top: 100px; position: fixed; left: 100x; right: 30px; z-index: 9999; width: 30%">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" style="border-radius: 30px; border-top-left-radius: 0px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            {{ message }}
+                        </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
     <main>
         {% block content %}
         {% endblock %}
