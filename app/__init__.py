@@ -35,6 +35,10 @@ students = {
 def index():
     return 'Hello, World!'
 
+@app.route('/login', methods=['GET'])
+def login():
+    return 'Login page'
+
 # @app.route('/classes', methods=['GET'])
 # def get_classes():
 #     classes = Classes.query.all()
