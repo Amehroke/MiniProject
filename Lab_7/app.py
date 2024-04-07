@@ -21,15 +21,6 @@ class Student(db.Model):
     def to_dict(self):
         return {"name": self.name, "grade": self.grade}
 
-class Teacher(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    classes = db.relationship('Class', backref='teacher', lazy=True)
-
-
-
-
-
 
 
 # Sample data for demonstration
@@ -37,26 +28,6 @@ students = {
     "Alice": 85,
     "Bob": 90,
     "Charlie": 75
-}
-
-classes = {
-    "Math 101": {
-        "teacher_name": "Ralph Jenkins",
-        "time": "MWF 10:00-10:50 AM",
-        "number_of_students": 8
-    },
-    
-    "English 101": {
-        "teacher_name": "Jill Stein",
-        "time": "MWF 11:00-11:50 AM",
-        "number_of_students": 10
-    }, 
-    
-    "History 101": {
-        "teacher_name": "John Doe",
-        "time": "MWF 12:00-12:50 PM",
-        "number_of_students": 12
-    }
 }
 
 
