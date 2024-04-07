@@ -21,6 +21,16 @@ class Student(db.Model):
     def to_dict(self):
         return {"name": self.name, "grade": self.grade}
 
+class Teacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    classes = db.relationship('Class', backref='teacher', lazy=True)
+
+
+
+
+
+
 
 # Sample data for demonstration
 students = {
@@ -29,14 +39,42 @@ students = {
     "Charlie": 75
 }
 
+classes = {
+    "Math 101": {
+        "teacher_name": "Ralph Jenkins",
+        "time": "MWF 10:00-10:50 AM",
+        "number_of_students": 8
+    },
+    
+    "English 101": {
+        "teacher_name": "Jill Stein",
+        "time": "MWF 11:00-11:50 AM",
+        "number_of_students": 10
+    }, 
+    
+    "History 101": {
+        "teacher_name": "John Doe",
+        "time": "MWF 12:00-12:50 PM",
+        "number_of_students": 12
+    }
+}
+
+
 @app.route('/')
 def index():
     return 'Hello, World!'
 
+# @app.route('/classes', methods=['GET'])
+# def get_classes():
+#     classes = Classes.query.all()
+#     return jsonify({class.name: class
+
 @app.route('/grades', methods=['GET'])
 def get_grades():
     students = Student.query.all()
+    print(students)
     return jsonify({student.name: student.grade for student in students})
+
 
 
 @app.route('/grade/<string:name>', methods=['GET'])
