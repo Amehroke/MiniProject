@@ -18,7 +18,7 @@ print(os.getenv('DATABASE_URL')) # this line will print the database url from th
 app = Flask(__name__) # this line will create the flask object
 app.app_context().push() # this line will create the application context, which is needed for the db object because it is not created with the app object in this file
 app.config['SECRET_KEY'] = 'b1b4b3b1b4b3b1b4b3b1b4b3b1b4b3' # this line will set the secret key for the app
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db' # this line will set the database uri to the students.db file
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' # this line will set the database uri to the students.db file
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # this line will set the track modifications to False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

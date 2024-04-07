@@ -10,6 +10,8 @@ from wtforms.validators import Length, DataRequired, Email, EqualTo, ValidationE
 # this is the secret key for the form
 class RegisterationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=30)])
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=30)])
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=30)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     status = SelectField('Status', choices=[('student', 'Student'), ('teacher', 'Teacher'), ('admin', 'Admin')], validators=[DataRequired()])
     password1 = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=30)])

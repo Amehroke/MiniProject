@@ -8,6 +8,8 @@ def load_user(user_id): # this function will load the user
 class User(db.Model, UserMixin): # UserMixin will give us the default implementations of the functions that we need to have in the User class for flask_login to work
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
+    first_name = db.Column(db.String(30), nullable=False)
+    last_name = db.Column(db.String(30), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(60), nullable=False)
     status = db.Column(db.String(30), nullable=False, default='student')
@@ -29,3 +31,18 @@ class Class(db.Model): # this line will create the Class model
 
     def __repr__(self): # this function will return the name of the class
         return f"Class('{self.name}')"
+    
+# how to delete all data from a table
+# >>> python
+# >>> from MSapp import models
+# >>> from MSapp.models import User, Great
+# >>> from MSapp import db
+
+### for all records ###
+# >>> db.session.query(User).delete()
+# 1
+# >>> db.session.
+
+### for specific records ###
+# >>> db.session.query(User).filter(User.id == 1).delete()
+# >>> db.session.commit()

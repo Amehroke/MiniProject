@@ -6,7 +6,7 @@ from app.forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 
 @app.route('/')
-def index():
+def home():
     return render_template('home.html')
 
 # pass the search form to the template/base.html
@@ -35,8 +35,11 @@ def signup():
     form = RegisterationForm()
     if form.validate_on_submit(): # if the form is valid/user has submitted the form
         new_user = User(username=form.username.data,
+                        first_name=form.first_name.data,
+                        last_name=form.last_name.data,
                         email=form.email.data,
-                        password=form.password1.data)
+                        password=form.password1.data,
+                        status=form.status.data)
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
