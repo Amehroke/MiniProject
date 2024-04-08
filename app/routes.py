@@ -15,16 +15,27 @@ from . import db
 
 
 @app.route('/courses')
+@login_required  # Ensure the user is logged in
 def show_courses():
     if current_user.status == 'teacher':
-        courses = Class.query.join(User).filter(Class.teacher_id == current_user.id).all()
+        courses = Class.query.filter(Class.teacher_id == current_user.id).all()
         return render_template('teacher.html', courses=courses)
     elif current_user.status == 'student':
-        courses = Class.query.join(Enrollment, Class.id == Enrollment.class_id)\
-                             .filter(Enrollment.student_id == current_user.id).all()
-        return render_template('student.html', courses=courses)
+        # Fetch all courses the student is enrolled in
+        enrolled_courses = Class.query.join(Enrollment, Class.id == Enrollment.class_id)\
+                                      .filter(Enrollment.student_id == current_user.id).all()
+        
+        # Fetch all courses to determine which ones the student is not enrolled in
+        all_courses = Class.query.all()
+        enrolled_course_ids = [course.id for course in enrolled_courses]
+        available_courses = [course for course in all_courses if course.id not in enrolled_course_ids]
+
+        return render_template('student.html', enrolled_courses=enrolled_courses, available_courses=available_courses)
     elif current_user.status == 'admin':
         return render_template('admin/index.html')
+    else:
+        # Redirect to home or a suitable page if user role is not recognized
+        return redirect(url_for('home'))
 
 @app.route('/')
 def home():
