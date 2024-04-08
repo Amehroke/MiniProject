@@ -75,3 +75,12 @@ def logout():
     logout_user()
     flash('You have been logged out', category='success')
     return redirect(url_for('home'))
+
+@app.route('/student')
+@login_required
+def student():
+    # Query all classes
+    classes = Class.query.all()
+
+    return render_template('student.html', classes=classes)
+

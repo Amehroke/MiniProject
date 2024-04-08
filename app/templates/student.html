@@ -8,13 +8,37 @@
 {% block content %}
  <!-- PUT CODE HERE -->
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Student Dashboard</h1>
-            <p>Welcome to the student dashboard. Here you can view your grades, attendance, and other information.</p>
-        </div>
-    </div>
+
+<h1>{{current_user.first_name}}s' Classes:</h1>
+
+
+<div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Course Name</th>
+            <th scope="col">Teacher</th>
+            <th scope="col">Time</th>
+            <th scope="col">Students Enrolled</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!-- Construct the rest of courses here -->
+        {% for course in courses %}
+        <tr>
+          
+          <td>{{course.course_name}}</td>
+          <td>{{course.teacher}}</td>
+          <td>{{course.time}}</td>
+          
+          <td style = "display: flex;" >{{course.number_enrolled}} <p> / </p> {{course.capacity}}    </td>
+          
+        </tr>
+        
+        {% endfor %}</tbody>
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}
