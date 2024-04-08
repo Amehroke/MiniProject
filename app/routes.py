@@ -7,11 +7,6 @@ from flask import current_app as app
 from .models import User, Class, Enrollment
 from . import db
 
-
-
-
-
-
 @app.route('/courses')
 @login_required  # Ensure the user is logged in
 def show_courses():
@@ -107,6 +102,7 @@ def unenroll():
         flash('Enrollment not found or you are not enrolled in this course.')
 
     return redirect(url_for('show_courses'))
+
 
 @app.route('/enroll', methods=['GET'])
 @login_required
