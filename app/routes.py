@@ -10,36 +10,10 @@ import pandas as pd
 from . import db
 
 
-@app.route('/generate_classes')
-def generate_sample_data():
-  
-    # Sample Classes
-    classes = [
-        Class(name="Math 101"),
-        Class(name="English 202"),
-        Class(name="Science 303"),
-    ]
-    db.session.bulk_save_objects(classes)
-    db.session.commit()
-    
-    return jsonify({"message": "Sample data generated successfully"}), 200
-
-
-
-
 
 @app.route('/')
 def home():
     return render_template('home.html')
-
-@app.route('/teacher')
-def teacher():
-    return render_template('teacher.html')
-
-@app.route('/student')
-def student():
-    return render_template('student.html')
-
 
 
 # pass the search form to the template/base.html
@@ -58,9 +32,11 @@ def login():
             login_user(attempted_user)
             flash(f'Success! You are logged in as: {attempted_user.first_name}', category='success')
             if attempted_user.status == 'teacher':
-                return redirect(url_for('teacher'))
+                return render_template('teacher.html')
             elif attempted_user.status == 'student':
-                return redirect(url_for('student'))
+                return render_template('student.html')
+            elif(form.status.data == 'admin'):
+                return render_template('admin/index.html')
             else:
                 return redirect(url_for('home'))
         else:
@@ -83,9 +59,11 @@ def signup():
         login_user(new_user)
         flash('You have successfully created an account!', category='success')
         if(form.status.data == 'teacher'):
-            return redirect(url_for('teacher'))
+            return render_template('teacher.html')
         elif(form.status.data == 'student'):
-            return redirect(url_for('student'))
+            return render_template('student.html')
+        elif(form.status.data == 'admin'):
+            return render_template('admin/index.html')
         else:
             return redirect(url_for('home'))
     if form.errors != {}: # if there are no errors from the validations
