@@ -26,7 +26,11 @@
                 <td>{{ course.name }}</td>
                 <td>{{current_user.first_name + ' ' + current_user.last_name }}</td>
                 <td>{{ course.time }}</td>
-                <td><button class="btn btn-primary">View {{ course.capacity }}</button></td>
+                <td>
+                    <button class="btn btn-primary view-grades" data-course-id="{{ course.id }}">
+                        View {{ course.enrollments|length }}/{{ course.capacity }}
+                    </button>
+                </td>                
             </tr>
             {% endfor %}
         </tbody>

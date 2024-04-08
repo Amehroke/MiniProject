@@ -11,9 +11,7 @@ from . import db
 
 
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+
 
 
 @app.route('/courses')
@@ -27,8 +25,76 @@ def show_courses():
         return render_template('student.html', courses=courses)
     elif current_user.status == 'admin':
         return render_template('admin/index.html')
- 
 
+@app.route('/')
+def home():
+    if current_user.is_authenticated:
+        return show_courses()
+    else:
+        return render_template('home.html')
+    
+@app.route('/edit-grades', methods=['GET'])
+@login_required
+def edit_grades():
+    course_id = request.args.get('courseId')
+    if course_id:
+        course = Class.query.get(course_id)
+        if course and current_user.id == course.teacher_id:
+            enrollments = Enrollment.query.filter_by(class_id=course_id).all()
+            return render_template('edit-grades.html', enrollments=enrollments, course=course)
+    flash('Unauthorized access or invalid course.')
+    return redirect(url_for('show_courses'))
+
+@app.route('/update-grades', methods=['POST'])
+@login_required
+def update_grades():
+    # Assuming `courseId` is the name attribute in your HTML form
+    course_id = request.form.get('courseId')
+    
+    if not course_id:
+        flash('No course specified.')
+        return redirect(url_for('show_courses'))
+    
+    course = Class.query.get(course_id)
+    
+    # Check if the course exists and the current user is the teacher of the course
+    if not course or current_user.id != course.teacher_id:
+        flash('Unauthorized or course not found.')
+        return redirect(url_for('show_courses'))
+
+    # Process grades only if the current user is the teacher of the course
+    for key in request.form:
+        if key.startswith('grade-'):
+            student_id = key.split('-')[1]  # Extract the student ID from the form field name
+            try:
+                student_id = int(student_id)
+                grade = request.form[key]
+                enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=student_id).first()
+                if enrollment:
+                    enrollment.grade = grade
+                    db.session.commit()
+            except ValueError:
+                # Handle the case where the student ID is not an integer
+                continue
+
+    flash('Grades updated successfully.')
+    return redirect(url_for('edit_grades', courseId=course_id))
+
+
+# @app.route('/grade/<string:name>', methods=['PUT'])
+# def update_grade(name):
+#     data = request.json
+#     # Find the student by name
+#     student = Student.query.filter_by(name=name).first()
+
+#     # If the student exists, update their grade
+#     if student:
+#         student.grade = data['grade']
+#         db.session.commit()  # Commit changes to the database
+#         return jsonify({"message": "Grade updated successfully"})
+#     else:
+#         # If the student was not found, return an error
+#         return jsonify({"error": "Student not found"}), 404
 
 # pass the search form to the template/base.html
 
