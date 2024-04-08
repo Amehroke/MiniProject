@@ -14,7 +14,7 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(60), nullable=False)
     status = db.Column(db.String(30), nullable=False, default='student')
-
+    
     @property # this is a decorator, it will allow us to access the function as an attribute
     def password(self): # this function will return the password
         return self.password
@@ -29,7 +29,7 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
 class Class(db.Model): # this line will create the Class model
     id = db.Column(db.Integer, primary_key=True) # this line will create the id column
     name = db.Column(db.String(100), nullable=False) # this line will create the name column
-
+    
     def __repr__(self): # this function will return the name of the class
         return f"Class('{self.name}')"
 
