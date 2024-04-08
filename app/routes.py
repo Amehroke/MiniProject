@@ -15,6 +15,21 @@ from . import db
 def home():
     return render_template('home.html')
 
+@app.route('/courses', methods=['GET'])
+def get_courses():
+    # Query all courses and join with the User table to get teacher info
+    courses = Class.query.join(User).filter(Class.teacher_id == current_user.id).all()
+
+    # Format the output to include course name, time, capacity, and teacher's name
+    course_info = [{
+        'name': course.name,
+        'time': course.time,
+        'capacity': course.capacity,
+        'teacher': current_user.first_name + ' ' + current_user.last_name
+    } for course in courses]
+
+    return jsonify(course_info)
+
 
 # pass the search form to the template/base.html
 

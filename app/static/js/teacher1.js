@@ -1,10 +1,34 @@
-const url1 = 'http://127.0.0.1:5000/grades'; 
+const url1 = 'http://127.0.0.1:5000/courses'; 
 const main = document.querySelector("main");
 
-
+{/* <div class="row">
+            <div class="col-md-12">
+                <h2>Your Courses</h2>
+                
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Teacher</th>
+                            <th>Time</th>
+                            <th>Students Enrolled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                            <tr>
+                                <td>{{ Class.name }}</td>
+                                <td>{{ course.code }}</td>
+                                <td>{{ course.students.count() }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div> */}
 
 // Function to display students
-function displayStudents(data) {
+function displayCourses(data) {
     main.innerHTML = ''; // Clear the main element before displaying results
     for (student in data) {
         let gradeArticle = document.createElement('article');
@@ -21,34 +45,34 @@ function displayStudents(data) {
         main.append(gradeArticle);
     }
 
-    // Add event listeners for delete button
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function() {
+    // // Add event listeners for delete button
+    // document.querySelectorAll('.delete-btn').forEach(button => {
+    //     button.addEventListener('click', function() {
 
-            const studentName = this.getAttribute('data-student');
-            // Confirmation dialog
-            const userConfirmed = confirm(`Are you sure you want to delete ${studentName}?`);
+    //         const studentName = this.getAttribute('data-student');
+    //         // Confirmation dialog
+    //         const userConfirmed = confirm(`Are you sure you want to delete ${studentName}?`);
             
-            if (userConfirmed) {
-                deleteStudentGrade(studentName);
-            }
-            // If the user clicks "Cancel", nothing happens thanks to the if condition
-        });
-    });
+    //         if (userConfirmed) {
+    //             deleteStudentGrade(studentName);
+    //         }
+    //         // If the user clicks "Cancel", nothing happens thanks to the if condition
+    //     });
+    // });
 
-    document.querySelectorAll('.upd-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const studentName = this.getAttribute('data-student');
-            const newGrade = prompt(`Enter new grade for ${studentName}:`);
+    // document.querySelectorAll('.upd-btn').forEach(button => {
+    //     button.addEventListener('click', function() {
+    //         const studentName = this.getAttribute('data-student');
+    //         const newGrade = prompt(`Enter new grade for ${studentName}:`);
 
-            // Basic validation for grade input
-            if (newGrade !== null && newGrade.trim() !== "" && !isNaN(newGrade) && parseInt(newGrade) >= 0) {
-                updateStudentGrade(studentName, parseInt(newGrade));
-            } else if (newGrade !== null) { // Ensure prompt was not cancelled
-                alert("Invalid grade input. Please enter a numeric value.");
-            }
-        });
-    });
+    //         // Basic validation for grade input
+    //         if (newGrade !== null && newGrade.trim() !== "" && !isNaN(newGrade) && parseInt(newGrade) >= 0) {
+    //             updateStudentGrade(studentName, parseInt(newGrade));
+    //         } else if (newGrade !== null) { // Ensure prompt was not cancelled
+    //             alert("Invalid grade input. Please enter a numeric value.");
+    //         }
+    //     });
+    // });
 
 }
 
@@ -130,13 +154,3 @@ async function deleteStudentGrade(studentName) {
 // Correct initial fetch call
 fetchGrades(url1); // Call this to initially load all grades
 
-// Improved search functionality inside an event listener
-document.querySelector('#search-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the form from submitting in the traditional way
-    const searchInput = document.querySelector('#search-input').value;
-    if (searchInput) {
-        fetchStudentGrades(searchInput);
-    } else {
-        fetchGrades(url); // Fetch all grades if search input is empty
-    }
-});

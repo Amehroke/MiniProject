@@ -16,33 +16,10 @@
                 <p>Welcome to the teacher dashboard. Here you can view all the courses you are teaching and the students enrolled in each course.</p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Your Courses</h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Course Name</th>
-                            <th>Teacher</th>
-                            <th>Time</th>
-                            <th>Students Enrolled</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for course in courses %}
-                            <tr>
-                                <td>{{ course.name }}</td>
-                                <td>{{ course.code }}</td>
-                                <td>{{ course.students.count() }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
+        <main></main>
     </div>
 
     <!-- END CODE -->   
-
 {% endblock %}
 
