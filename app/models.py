@@ -14,7 +14,9 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(60), nullable=False)
     status = db.Column(db.String(30), nullable=False, default='student')
-    
+    enrolled_classes = db.relationship('Enrollment', back_populates='student')
+    taught_classes = db.relationship('Class', backref='teacher')
+
     @property # this is a decorator, it will allow us to access the function as an attribute
     def password(self): # this function will return the password
         return self.password
@@ -29,12 +31,27 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
 class Class(db.Model): # this line will create the Class model
     id = db.Column(db.Integer, primary_key=True) # this line will create the id column
     name = db.Column(db.String(100), nullable=False) # this line will create the name column
-    
+    time = db.Column(db.String(50), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    enrollments = db.relationship('Enrollment', back_populates='class_')
+
     def __repr__(self): # this function will return the name of the class
         return f"Class('{self.name}')"
 
+class Enrollment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
+    grade = db.Column(db.Integer)
+    student = db.relationship('User', back_populates='enrolled_classes')
+    class_ = db.relationship('Class', back_populates='enrollments')
+
+
+
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Class, db.session))
+admin.add_view(ModelView(Enrollment, db.session))
     
 # how to delete all data from a table
 # >>> python
