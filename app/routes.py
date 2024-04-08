@@ -4,9 +4,28 @@ from app import app, db, bcrypt, login_manager
 from app.models import User, Class
 from app.forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
+from sqlalchemy_schemadisplay import create_schema_graph
+from sqlalchemy import MetaData
+
 
 @app.route('/')
 def home():
+    return render_template('home.html')
+
+@app.route('/printgraph', methods=['GET'])
+def printgraph():
+
+    graph = create_schema_graph(
+        metadata=MetaData('sqlite:///instance/database.db'),  # Use your actual database URI
+        show_datatypes=True,  # Whether to show datatypes
+        show_indexes=True,  # Whether to show index names
+        rankdir='LR',  # Direction of layout ('LR' for left-to-right, 'TB' for top to bottom)
+        concentrate=False  # Don't try to join the relation lines together
+    )
+
+    graph.write_png('schema_diagram.png')
+
+    flash('Schema diagram printed', category='success')
     return render_template('home.html')
 
 # pass the search form to the template/base.html
