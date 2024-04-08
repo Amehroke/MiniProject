@@ -1,30 +1,62 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Sign Up!
+    Sign Up
 {% endblock %}
 
 {% block content %}
 
-    <section class="py-5 mt-5">
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-6 col-xl-4">
-                <h2 class="mb-4 text-center fw-semibold">Sign Up!</h2>
-                <form class="text-center form-register" method="POST">
-                    {{ form.csrf_token }}
-                    {{ form.hidden_tag() }}
-                    {{ form.username(class="form-control mb-3", placeholder="Username") }}
-                    {{ form.first_name(class="form-control mb-3", placeholder="First Name") }}
-                    {{ form.last_name(class="form-control mb-3", placeholder="Last Name") }}
-                    {{ form.email(class="form-control mb-3", placeholder="Email") }}
-                    {{ form.status(class="form-control mb-3", placeholder="Status") }}
-                    {{ form.password1(class="form-control mb-3", placeholder="Password") }}
-                    {{ form.password2(class="form-control mb-3", placeholder="Confirm Password") }}
-                    {{ form.submit(class="btn btn-secondary d-block w-100", value="Create Account") }}
-                    <p class="text-muted" style="margin-top: 10px;">Already have an account? <a class="btn btn-sm btn-primary" href="{{ url_for('login' )}}">Login!</a></p>
-                </form>
+     <!-- Background -->
+     <div class="bg"></div>
+     <div class="bg bg2"></div>
+     <div class="bg bg3"></div>
+     </div>
+     
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow p-4">
+                    <h2 class="text-center mb-4">Sign Up</h2>
+                    <form class="form-register" method="POST">
+                        {{ form.csrf_token }}
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.username(class="form-control", placeholder="Username") }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name(class="form-control", placeholder="First Name") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name(class="form-control", placeholder="Last Name") }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.email(class="form-control", placeholder="Email") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.status(class="form-control", placeholder="Status") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password1(class="form-control", placeholder="Password") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password2(class="form-control", placeholder="Confirm Password") }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    </form>
+                    <p class="text-center mt-3">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                </div>
             </div>
         </div>
-    </section>
-
+    </div>
+</section>
 {% endblock %}
