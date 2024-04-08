@@ -5,7 +5,7 @@ from app.models import User, Class
 from app.forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 from flask import current_app as app, jsonify
-from .models import User, Class
+from .models import User, Class, Enrollment
 import pandas as pd
 from . import db
 
@@ -15,20 +15,19 @@ from . import db
 def home():
     return render_template('home.html')
 
-@app.route('/courses', methods=['GET'])
-def get_courses():
-    # Query all courses and join with the User table to get teacher info
-    courses = Class.query.join(User).filter(Class.teacher_id == current_user.id).all()
 
-    # Format the output to include course name, time, capacity, and teacher's name
-    course_info = [{
-        'name': course.name,
-        'time': course.time,
-        'capacity': course.capacity,
-        'teacher': current_user.first_name + ' ' + current_user.last_name
-    } for course in courses]
-
-    return jsonify(course_info)
+@app.route('/courses')
+def show_courses():
+    if current_user.status == 'teacher':
+        courses = Class.query.join(User).filter(Class.teacher_id == current_user.id).all()
+        return render_template('teacher.html', courses=courses)
+    elif current_user.status == 'student':
+        courses = Class.query.join(Enrollment, Class.id == Enrollment.class_id)\
+                             .filter(Enrollment.student_id == current_user.id).all()
+        return render_template('student.html', courses=courses)
+    elif current_user.status == 'admin':
+        return render_template('admin/index.html')
+ 
 
 
 # pass the search form to the template/base.html
@@ -46,14 +45,8 @@ def login():
             
             login_user(attempted_user)
             flash(f'Success! You are logged in as: {attempted_user.first_name}', category='success')
-            if attempted_user.status == 'teacher':
-                return render_template('teacher.html')
-            elif attempted_user.status == 'student':
-                return render_template('student.html')
-            elif(form.status.data == 'admin'):
-                return render_template('admin/index.html')
-            else:
-                return redirect(url_for('home'))
+            return show_courses()
+          
         else:
             flash('Incorrect Username or Password. Please try again.', category='danger')
 

@@ -15,33 +15,30 @@
             <p>Welcome to the student dashboard. Here you can view your grades, attendance, and other information.</p>
         </div>
     </div>
-
-
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Your Courses</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Teacher</th>
-                        <th>Time</th>
-                        <th>Students Enrolled</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for course in courses %}
-                        <tr>
-                            <td>{{ course.name }}</td>
-                            <td>{{ course.code }}</td>
-                            <td>{{ course.students.count() }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    
+    <div class="container mt-4">
+        <h2>Your Courses</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Teacher</th>
+                    <th>Time</th>
+                    <th>Enroll/Unenroll</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.name }}</td>
+                    <td>{{course.teacher.first_name + ' ' + course.teacher.last_name}}</td>
+                    <td>{{ course.time }}</td>
+                    <td><button class="btn btn-warning">Unenroll</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
-
+    <!-- END CODE -->   
 {% endblock %}
 
