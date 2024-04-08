@@ -1,12 +1,10 @@
-import requests
-from flask import request, render_template, redirect, url_for, flash, get_flashed_messages
+from flask import request, render_template, redirect, url_for, flash
 from app import app, db, bcrypt, login_manager
 from app.models import User, Class
 from app.forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
-from flask import current_app as app, jsonify
+from flask import current_app as app
 from .models import User, Class, Enrollment
-import pandas as pd
 from . import db
 
 
@@ -91,23 +89,48 @@ def update_grades():
     flash('Grades updated successfully.')
     return redirect(url_for('edit_grades', courseId=course_id))
 
+@app.route('/unenroll', methods=['GET'])
+@login_required
+def unenroll():
+    course_id = request.args.get('courseId', type=int)
+    if not course_id:
+        flash("Invalid course ID.")
+        return redirect(url_for('show_courses'))
 
-# @app.route('/grade/<string:name>', methods=['PUT'])
-# def update_grade(name):
-#     data = request.json
-#     # Find the student by name
-#     student = Student.query.filter_by(name=name).first()
+    # Query the enrollment to delete
+    enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=current_user.id).first()
+    if enrollment:
+        db.session.delete(enrollment)
+        db.session.commit()
+        flash('You have been unenrolled from the course.')
+    else:
+        flash('Enrollment not found or you are not enrolled in this course.')
 
-#     # If the student exists, update their grade
-#     if student:
-#         student.grade = data['grade']
-#         db.session.commit()  # Commit changes to the database
-#         return jsonify({"message": "Grade updated successfully"})
-#     else:
-#         # If the student was not found, return an error
-#         return jsonify({"error": "Student not found"}), 404
+    return redirect(url_for('show_courses'))
 
-# pass the search form to the template/base.html
+@app.route('/enroll', methods=['GET'])
+@login_required
+def enroll():
+    course_id = request.args.get('courseId', type=int)
+    if not course_id:
+        flash("Invalid course ID.")
+        return redirect(url_for('show_courses'))
+
+    # Check if already enrolled to prevent duplicate entries
+    existing_enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=current_user.id).first()
+    if existing_enrollment:
+        flash('You are already enrolled in this course.')
+        return redirect(url_for('show_courses'))
+
+    # Create and save the new enrollment
+    new_enrollment = Enrollment(class_id=course_id, student_id=current_user.id)
+    db.session.add(new_enrollment)
+    db.session.commit()
+    flash('You have been successfully enrolled in the course.')
+
+    return redirect(url_for('show_courses'))
+
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
