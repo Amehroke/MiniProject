@@ -165,7 +165,7 @@ def signup():
         elif(form.status.data == 'student'):
             return render_template('student.html')
         elif(form.status.data == 'admin'):
-            return render_template('home.html')
+            return render_template('index.html')
         else:
             return redirect(url_for('home'))
     if form.errors != {}: # if there are no errors from the validations
