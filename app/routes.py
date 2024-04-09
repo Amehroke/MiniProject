@@ -35,15 +35,17 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         attempted_user = User.query.filter_by(username=form.username.data).first()
-        if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data): # this line will check if we have a user with the username that the user entered and if the password that the user entered is correct
+        if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             if form.remember.data:
                 login_user(attempted_user, remember=True)
                 flash(f'Success! You are logged in as: {attempted_user.first_name}, and will be remembered for 1 hour', category='success')
-                return redirect(url_for('home'))
-            
+                return redirect(url_for('student' if attempted_user.status == 'student' else 'teacher'))
             login_user(attempted_user)
             flash(f'Success! You are logged in as: {attempted_user.first_name}', category='success')
-            return redirect(url_for('home'))
+            if attempted_user.status == 'student':
+                return redirect(url_for('student'))
+            elif attempted_user.status == 'teacher':
+                return redirect(url_for('teacher'))
         else:
             flash('Incorrect Username or Password. Please try again.', category='danger')
 
@@ -84,3 +86,8 @@ def student():
 
     return render_template('student.html', classes=classes)
 
+@app.route('/teacher')
+@login_required
+def teacher():
+    # Logic for teacher route
+    return render_template('teacher.html')

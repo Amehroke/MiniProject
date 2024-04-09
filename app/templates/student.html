@@ -4,42 +4,60 @@
     Student Dashboard
 {% endblock %}
 
-
 {% block content %}
- <!-- PUT CODE HERE -->
+    <!-- PUT CODE HERE -->
 
+    <div class="container">
+        <p></p><h2>{{ current_user.first_name }}'s Classes:</h2>
 
-<h1>{{current_user.first_name}}s' Classes:</h1>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#view-classes">View Classes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#add-classes">Add Classes</a>
+            </li>
+        </ul>
 
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <!-- View Classes Tab -->
+            <div id="view-classes" class="tab-pane fade show active">
+                <div class="class-table">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Course Name</th>
+                                <th scope="col">Teacher</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Students Enrolled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Construct the rest of courses here -->
+                            {% for course in courses %}
+                                <tr>
+                                    <td>{{ course.course_name }}</td>
+                                    <td>{{ course.teacher }}</td>
+                                    <td>{{ course.time }}</td>
+                                    <td class="enrolled-info">
+                                        <span class="enrolled-count">{{ course.number_enrolled }}</span>
+                                        <span class="icon">🎓</span>
+                                        <span class="capacity">{{ course.capacity }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-<div>
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th scope="col">Course Name</th>
-            <th scope="col">Teacher</th>
-            <th scope="col">Time</th>
-            <th scope="col">Students Enrolled</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        <!-- Construct the rest of courses here -->
-        {% for course in courses %}
-        <tr>
-          
-          <td>{{course.course_name}}</td>
-          <td>{{course.teacher}}</td>
-          <td>{{course.time}}</td>
-          
-          <td style = "display: flex;" >{{course.number_enrolled}} <p> / </p> {{course.capacity}}    </td>
-          
-        </tr>
-        
-        {% endfor %}</tbody>
-        </tbody>
-    </table>
-</div>
-
+            <!-- Add Classes Tab -->
+            <div id="add-classes" class="tab-pane fade">
+                <!-- Form to add classes can be placed here -->
+                <p>You can add classes here</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-
