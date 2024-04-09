@@ -17,6 +17,9 @@ class User(db.Model, UserMixin): # UserMixin will give us the default implementa
     enrolled_classes = db.relationship('Enrollment', back_populates='student')
     taught_classes = db.relationship('Class', backref='teacher')
 
+    def __repr__(self): # this function will return the username of the user
+        return f"{self.first_name} {self.last_name}"
+
     @property # this is a decorator, it will allow us to access the function as an attribute
     def password(self): # this function will return the password
         return self.password
@@ -35,9 +38,13 @@ class Class(db.Model): # this line will create the Class model
     capacity = db.Column(db.Integer, nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     enrollments = db.relationship('Enrollment', back_populates='class_')
+    time = db.Column(db.String(50), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    enrollments = db.relationship('Enrollment', back_populates='class_')
 
     def __repr__(self): # this function will return the name of the class
-        return f"Class('{self.name}')"
+        return f"{self.name}"
 
 class Enrollment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

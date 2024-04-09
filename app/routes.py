@@ -1,34 +1,130 @@
-import requests
-from flask import request, render_template, redirect, url_for, flash, get_flashed_messages
-from app import app, db, bcrypt, login_manager
-from app.models import User, Class
-from app.forms import RegisterationForm, LoginForm
+from flask import request, render_template, redirect, url_for, flash
+from . import app, db
+from .models import User, Class, Enrollment
+from .forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
-from sqlalchemy_schemadisplay import create_schema_graph
-from sqlalchemy import MetaData
+from flask import current_app as app
 
+@app.route('/courses')
+@login_required  # Ensure the user is logged in
+def show_courses():
+    if current_user.status == 'teacher':
+        courses = Class.query.filter(Class.teacher_id == current_user.id).all()
+        return render_template('teacher.html', courses=courses)
+    elif current_user.status == 'student':
+        # Fetch all courses the student is enrolled in
+        enrolled_courses = Class.query.join(Enrollment, Class.id == Enrollment.class_id)\
+                                      .filter(Enrollment.student_id == current_user.id).all()
+        
+        # Fetch all courses to determine which ones the student is not enrolled in
+        all_courses = Class.query.all()
+        enrolled_course_ids = [course.id for course in enrolled_courses]
+        available_courses = [course for course in all_courses if course.id not in enrolled_course_ids]
+
+        return render_template('student.html', enrolled_courses=enrolled_courses, available_courses=available_courses)
+    elif current_user.status == 'admin':
+        return render_template('home.html')
+    else:
+        # Redirect to home or a suitable page if user role is not recognized
+        return redirect(url_for('home'))
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        return show_courses()
+    else:
+        return render_template('home.html')
+    
+@app.route('/edit-grades', methods=['GET'])
+@login_required
+def edit_grades():
+    course_id = request.args.get('courseId')
+    if course_id:
+        course = Class.query.get(course_id)
+        if course and current_user.id == course.teacher_id:
+            enrollments = Enrollment.query.filter_by(class_id=course_id).all()
+            return render_template('edit-grades.html', enrollments=enrollments, course=course)
+    flash('Unauthorized access or invalid course.', category='danger')
+    return redirect(url_for('show_courses'))
 
-@app.route('/printgraph', methods=['GET'])
-def printgraph():
+@app.route('/update-grades', methods=['POST'])
+@login_required
+def update_grades():
+    # Assuming `courseId` is the name attribute in your HTML form
+    course_id = request.form.get('courseId')
+    
+    if not course_id:
+        flash('No course specified.', category='info')
+        return redirect(url_for('show_courses'))
+    
+    course = Class.query.get(course_id)
+    
+    # Check if the course exists and the current user is the teacher of the course
+    if not course or current_user.id != course.teacher_id:
+        flash('Unauthorized or course not found.', category='danger')
+        return redirect(url_for('show_courses'))
 
-    graph = create_schema_graph(
-        metadata=MetaData('sqlite:///instance/database.db'),  # Use your actual database URI
-        show_datatypes=True,  # Whether to show datatypes
-        show_indexes=True,  # Whether to show index names
-        rankdir='LR',  # Direction of layout ('LR' for left-to-right, 'TB' for top to bottom)
-        concentrate=False  # Don't try to join the relation lines together
-    )
+    # Process grades only if the current user is the teacher of the course
+    for key in request.form:
+        if key.startswith('grade-'):
+            student_id = key.split('-')[1]  # Extract the student ID from the form field name
+            try:
+                student_id = int(student_id)
+                grade = request.form[key]
+                enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=student_id).first()
+                if enrollment:
+                    enrollment.grade = grade
+                    db.session.commit()
+            except ValueError:
+                # Handle the case where the student ID is not an integer
+                continue
 
-    graph.write_png('schema_diagram.png')
+    flash('Grades updated successfully.', category='success')
+    return redirect(url_for('edit_grades', courseId=course_id))
 
-    flash('Schema diagram printed', category='success')
-    return render_template('home.html')
+@app.route('/unenroll', methods=['GET'])
+@login_required
+def unenroll():
+    course_id = request.args.get('courseId', type=int)
+    if not course_id:
+        flash("Invalid course ID.", category='danger')
+        return redirect(url_for('show_courses'))
 
-# pass the search form to the template/base.html
+    # Query the enrollment to delete
+    enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=current_user.id).first()
+    if enrollment:
+        db.session.delete(enrollment)
+        db.session.commit()
+        flash('You have been unenrolled from the course.', category='danger')
+    else:
+        flash('Enrollment not found or you are not enrolled in this course.', category='info')
+
+    return redirect(url_for('show_courses'))
+
+
+@app.route('/enroll', methods=['GET'])
+@login_required
+def enroll():
+    course_id = request.args.get('courseId', type=int)
+    if not course_id:
+        flash("Invalid course ID.", category='danger')
+        return redirect(url_for('show_courses'))
+
+    # Check if already enrolled to prevent duplicate entries
+    existing_enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=current_user.id).first()
+    if existing_enrollment:
+        flash('You are already enrolled in this course.', category='info')
+        return redirect(url_for('show_courses'))
+
+    # Create and save the new enrollment
+    new_enrollment = Enrollment(class_id=course_id, student_id=current_user.id)
+    db.session.add(new_enrollment)
+    db.session.commit()
+    flash('You have been successfully enrolled in the course.', category='success')
+
+    return redirect(url_for('show_courses'))
+
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -43,7 +139,8 @@ def login():
             
             login_user(attempted_user)
             flash(f'Success! You are logged in as: {attempted_user.first_name}', category='success')
-            return redirect(url_for('home'))
+            return show_courses()
+          
         else:
             flash('Incorrect Username or Password. Please try again.', category='danger')
 
@@ -63,7 +160,14 @@ def signup():
         db.session.commit()
         login_user(new_user)
         flash('You have successfully created an account!', category='success')
-        return redirect(url_for('home'))
+        if(form.status.data == 'teacher'):
+            return render_template('teacher.html')
+        elif(form.status.data == 'student'):
+            return render_template('student.html')
+        elif(form.status.data == 'admin'):
+            return render_template('home.html')
+        else:
+            return redirect(url_for('home'))
     if form.errors != {}: # if there are no errors from the validations
         for err_msg in form.errors.values(): # loop through the dictionary of errors
             flash(f'Registeration Error: {err_msg}', category='danger') # print each error message to the screen
