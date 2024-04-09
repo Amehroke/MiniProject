@@ -30,6 +30,7 @@
                 <th>Course Name</th>
                 <th>Teacher</th>
                 <th>Time</th>
+                <th>Capacity</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -37,6 +38,7 @@
                 <td>{{ course.name }}</td>
                 <td>{{ course.teacher.first_name }} {{ course.teacher.last_name }}</td>
                 <td>{{ course.time }}</td>
+                <td>{{ course.enrollments|length }}/{{ course.capacity }}</td>
                 <td>
                   <button class="btn btn-warning" onclick="location.href='/unenroll?courseId={{ course.id }}'">Unenroll</button>
                 </td>
@@ -53,6 +55,7 @@
                 <th>Course Name</th>
                 <th>Teacher</th>
                 <th>Time</th>
+                <th>Capacity</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -60,6 +63,8 @@
                 <td>{{ course.name }}</td>
                 <td>{{ course.teacher.first_name }} {{ course.teacher.last_name }}</td>
                 <td>{{ course.time }}</td>
+                <td>{{ course.enrollments|length }}/{{ course.capacity }}</td>
+                
                 <td>
                   <button class="btn btn-success" onclick="location.href='/enroll?courseId={{ course.id }}'">Enroll</button>
                 </td>
