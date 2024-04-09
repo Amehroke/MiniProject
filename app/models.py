@@ -38,9 +38,23 @@ class Class(db.Model): # this line will create the Class model
     capacity = db.Column(db.Integer, nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     enrollments = db.relationship('Enrollment', back_populates='class_')
+    time = db.Column(db.String(50), nullable=False)
+    capacity = db.Column(db.Integer, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    enrollments = db.relationship('Enrollment', back_populates='class_')
 
     def __repr__(self): # this function will return the name of the class
         return f"{self.name}"
+
+class Enrollment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
+    grade = db.Column(db.Integer)
+    student = db.relationship('User', back_populates='enrolled_classes')
+    class_ = db.relationship('Class', back_populates='enrollments')
+
+
 
 class Enrollment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
