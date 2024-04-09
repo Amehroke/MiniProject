@@ -56,16 +56,6 @@ class Enrollment(db.Model):
 
 
 
-class Enrollment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
-    grade = db.Column(db.Integer)
-    student = db.relationship('User', back_populates='enrolled_classes')
-    class_ = db.relationship('Class', back_populates='enrollments')
-
-
-
 admin.add_view(ModelView(User, db.session))
 admin.add_view(ModelView(Class, db.session))
 admin.add_view(ModelView(Enrollment, db.session))
