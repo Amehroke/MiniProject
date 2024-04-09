@@ -1,11 +1,9 @@
 from flask import request, render_template, redirect, url_for, flash
-from app import app, db, bcrypt, login_manager
-from app.models import User, Class
-from app.forms import RegisterationForm, LoginForm
+from . import app, db
+from .models import User, Class, Enrollment
+from .forms import RegisterationForm, LoginForm
 from flask_login import login_user, logout_user, login_required, current_user
 from flask import current_app as app
-from .models import User, Class, Enrollment
-from . import db
 
 @app.route('/courses')
 @login_required  # Ensure the user is logged in
@@ -25,7 +23,7 @@ def show_courses():
 
         return render_template('student.html', enrolled_courses=enrolled_courses, available_courses=available_courses)
     elif current_user.status == 'admin':
-        return render_template('admin/index.html')
+        return render_template('home.html')
     else:
         # Redirect to home or a suitable page if user role is not recognized
         return redirect(url_for('home'))
@@ -167,7 +165,7 @@ def signup():
         elif(form.status.data == 'student'):
             return render_template('student.html')
         elif(form.status.data == 'admin'):
-            return render_template('admin/index.html')
+            return render_template('home.html')
         else:
             return redirect(url_for('home'))
     if form.errors != {}: # if there are no errors from the validations
