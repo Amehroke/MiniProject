@@ -44,7 +44,7 @@ def edit_grades():
         if course and current_user.id == course.teacher_id:
             enrollments = Enrollment.query.filter_by(class_id=course_id).all()
             return render_template('edit-grades.html', enrollments=enrollments, course=course)
-    flash('Unauthorized access or invalid course.')
+    flash('Unauthorized access or invalid course.', category='danger')
     return redirect(url_for('show_courses'))
 
 @app.route('/update-grades', methods=['POST'])
@@ -54,14 +54,14 @@ def update_grades():
     course_id = request.form.get('courseId')
     
     if not course_id:
-        flash('No course specified.')
+        flash('No course specified.', category='info')
         return redirect(url_for('show_courses'))
     
     course = Class.query.get(course_id)
     
     # Check if the course exists and the current user is the teacher of the course
     if not course or current_user.id != course.teacher_id:
-        flash('Unauthorized or course not found.')
+        flash('Unauthorized or course not found.', category='danger')
         return redirect(url_for('show_courses'))
 
     # Process grades only if the current user is the teacher of the course
@@ -79,7 +79,7 @@ def update_grades():
                 # Handle the case where the student ID is not an integer
                 continue
 
-    flash('Grades updated successfully.')
+    flash('Grades updated successfully.', category='success')
     return redirect(url_for('edit_grades', courseId=course_id))
 
 @app.route('/unenroll', methods=['GET'])
@@ -87,7 +87,7 @@ def update_grades():
 def unenroll():
     course_id = request.args.get('courseId', type=int)
     if not course_id:
-        flash("Invalid course ID.")
+        flash("Invalid course ID.", category='danger')
         return redirect(url_for('show_courses'))
 
     # Query the enrollment to delete
@@ -95,9 +95,9 @@ def unenroll():
     if enrollment:
         db.session.delete(enrollment)
         db.session.commit()
-        flash('You have been unenrolled from the course.')
+        flash('You have been unenrolled from the course.', category='danger')
     else:
-        flash('Enrollment not found or you are not enrolled in this course.')
+        flash('Enrollment not found or you are not enrolled in this course.', category='info')
 
     return redirect(url_for('show_courses'))
 
@@ -107,20 +107,20 @@ def unenroll():
 def enroll():
     course_id = request.args.get('courseId', type=int)
     if not course_id:
-        flash("Invalid course ID.")
+        flash("Invalid course ID.", category='danger')
         return redirect(url_for('show_courses'))
 
     # Check if already enrolled to prevent duplicate entries
     existing_enrollment = Enrollment.query.filter_by(class_id=course_id, student_id=current_user.id).first()
     if existing_enrollment:
-        flash('You are already enrolled in this course.')
+        flash('You are already enrolled in this course.', category='info')
         return redirect(url_for('show_courses'))
 
     # Create and save the new enrollment
     new_enrollment = Enrollment(class_id=course_id, student_id=current_user.id)
     db.session.add(new_enrollment)
     db.session.commit()
-    flash('You have been successfully enrolled in the course.')
+    flash('You have been successfully enrolled in the course.', category='success')
 
     return redirect(url_for('show_courses'))
 
