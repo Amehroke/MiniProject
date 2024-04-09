@@ -1,0 +1,136 @@
+html {
+    height: 100%;
+  }
+  
+  .title-text {
+    color: white;
+  }
+  
+  .home-text {
+    color: white;
+  }
+  
+  body {
+    margin: 0;
+    background-image: linear-gradient(
+      -60deg,
+      rgb(9, 52, 111) 50%,
+      rgb(6, 75, 122) 50%
+    );
+  }
+  
+  .bg {
+    animation: slide 8s ease-in-out infinite alternate;
+    background-image: linear-gradient(
+      -60deg,
+      rgb(9, 52, 111) 50%,
+      rgb(6, 75, 122) 50%
+    );
+    bottom: 0;
+    left: -50%;
+    opacity: 0.5;
+    position: fixed;
+    right: -50%;
+    top: 0;
+    z-index: -1;
+  }
+  
+  .bg2 {
+    animation-direction: alternate-reverse;
+    animation-duration: 12s;
+  }
+  
+  .bg3 {
+    animation-duration: 15s;
+  }
+  
+  .background-container {
+    position: fixed; /* Fixed position to keep the element in a fixed position relative to the viewport */
+    top: 50%; /* Position from the top of the viewport */
+    left: 50%; /* Position from the left of the viewport */
+    transform: translate(
+      -50%,
+      -50%
+    ); /* Center the element horizontally and vertically */
+    width: 80%; /* Set the width to fill the viewport */
+    height: 80%; /* Set the height to fill the viewport */
+    background-image: url("https://i.ibb.co/LYYDHd7/MODEEPCHE-2.png"),
+      linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ); /* URL of your background image and linear gradient */
+    background-size: auto; /* Scale the background image to cover the entire container */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the background image from repeating */
+    /* Blending mode to create a glossy effect */
+    /* mix-blend-mode: overlay; */
+  }
+  
+  .text-container {
+    float: left; /* Float the element to the left */
+    width: 50%; /* Set the width of the element */
+    margin-right: 10px; /* Add margin to create space between the text container and other content */
+  }
+  .image-container {
+    float: left; /* Float the container to the left */
+    margin-right: 20px; /* Add margin to create space between the image container and other content */
+    position: absolute; /* Set the text as absolute positioning */
+    bottom: 0; /* Position the text at the bottom of the container */
+    left: 0; /* Position the text at the left of the container */
+    margin: 30;
+  }
+  
+  h1 {
+    font-family: monospace;
+  }
+  
+  @keyframes slide {
+    0% {
+      transform: translateX(-25%);
+    }
+    100% {
+      transform: translateX(25%);
+    }
+  }
+  
+  .card-body-transparent {
+    background-color: rgba(255, 255, 255, 0.8); /* White with 80% opacity */
+  }
+  
+  .table th,
+  .table td {
+    border: yes;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #f0f0f0; /* Background color on hover for table rows */
+  }
+  
+  .nav-tabs {
+    background-color: rgba(
+      121,
+      175,
+      237,
+      0.3
+    ); /* Set tab background color to white */
+  }
+  
+  .nav-link {
+    color: rgb(255, 255, 255); /* Set hyperlink text color to blue */
+    border-radius: 10px 10px 0 0; /*Add rounded corners to the border */
+    padding: 10px;
+  }
+  
+  .nav-link:hover {
+    color: rgb(0, 0, 0);
+  }
+  
+  .tab-content-wrapper {
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 0px;
+  }
+  

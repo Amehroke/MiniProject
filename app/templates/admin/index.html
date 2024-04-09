@@ -1,12 +1,12 @@
 {% extends 'admin/master.html' %}
 
 {% block body %}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Hello, {{ current_user.first_name }}!</h1>
-            <p>Welcome to the admin dashboard</p>
+            <h1 class="title-text">Hello, {{ current_user.first_name }}!</h1>
+            <p><h3 class = "title-text">Welcome to the admin dashboard</h3></p>
         </div>
     </div>
 </div>

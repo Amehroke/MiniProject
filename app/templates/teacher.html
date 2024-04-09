@@ -1,41 +1,29 @@
-{% extends 'base.html' %}
-
-{% block title %}
-    Teacher Dashboard
-{% endblock %}
-
-
-{% block content %}
-
- <!-- PUT CODE HERE -->
-    
- <div class="container mt-4">
-    <h2>My Courses</h2>
+{% extends 'base.html' %} {% block title %} Teacher Dashboard {% endblock %} {% block content %}
+<!-- PUT CODE HERE -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<div class="container mt-4">
+  <h1 class="title-text">My Courses</h1>
+  <p></p>
+  <div class="tab-content-wrapper">
     <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Course Name</th>
-                <th>Teacher</th>
-                <th>Time</th>
-                <th>Students Enrolled</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.name }}</td>
-                <td>{{current_user.first_name + ' ' + current_user.last_name }}</td>
-                <td>{{ course.time }}</td>
-                <td>
-                    <button class="btn btn-primary view-grades" data-course-id="{{ course.id }}">
-                        View {{ course.enrollments|length }}/{{ course.capacity }}
-                    </button>
-                </td>                
-            </tr>
-            {% endfor %}
-        </tbody>
+      <thead>
+        <tr>
+          <th>Course Name</th>
+          <th>Teacher</th>
+          <th>Time</th>
+          <th>Students Enrolled</th>
+        </tr>
+      </thead>
+      <tbody> {% for course in courses %} <tr>
+          <td>{{ course.name }}</td>
+          <td>{{current_user.first_name + ' ' + current_user.last_name }}</td>
+          <td>{{ course.time }}</td>
+          <td>
+            <button class="btn btn-primary view-grades" data-course-id="{{ course.id }}"> View {{ course.enrollments|length }}/{{ course.capacity }}
+            </button>
+          </td>
+        </tr> {% endfor %} </tbody>
     </table>
+  </div>
 </div>
-    <!-- END CODE -->   
-{% endblock %}
-
+<!-- END CODE --> {% endblock %}
